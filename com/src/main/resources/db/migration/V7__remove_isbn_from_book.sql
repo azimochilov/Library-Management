@@ -1,0 +1,2 @@
+ALTER TABLE book
+DROP COLUMN isbn;

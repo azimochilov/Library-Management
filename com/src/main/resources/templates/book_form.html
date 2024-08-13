@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${bookDto.id == null ? 'Add Book' : 'Edit Book'}"></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        .form-container h1 {
+            margin-bottom: 1.5em;
+            font-size: 2em;
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 1em;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5em;
+            color: #555;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .submit-button {
+            width: 100%;
+            padding: 0.75em;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1 th:text="${bookDto.id == null ? 'Add Book' : 'Edit Book'}"></h1>
+    <form th:action="@{${bookDto.id == null ? '/books/create' : '/books/update'}}" method="post" th:object="${bookDto}">
+        <input type="hidden" name="id" th:value="${bookDto.id}" />
+        <div class="form-group">
+            <label for="nameOfBook">Name:</label>
+            <input type="text" id="nameOfBook" name="nameOfBook" th:field="*{nameOfBook}" required />
+        </div>
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" th:field="*{title}" required />
+        </div>
+        <div class="form-group">
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" th:field="*{author}" required />
+        </div>
+        <div class="form-group">
+            <label for="branchId">Branch:</label>
+            <select id="branchId" name="branchId" th:field="*{branchId}" required>
+                <option th:each="branch : ${branches}" th:value="${branch.id}" th:text="${branch.name}"></option>
+            </select>
+        </div>
+        <button type="submit" class="submit-button">Save</button>
+    </form>
+</div>
+</body>
+</html>

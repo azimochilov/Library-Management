@@ -1,0 +1,36 @@
+  server:
+    port: 8081
+
+
+  spring:
+    flyway:
+      enabled: true
+      baseline-on-migrate: true
+
+
+
+    mvc:
+      static-path-pattern: /static/**
+
+    datasource:
+      url: jdbc:postgresql://localhost:5432/library
+      username: postgres
+      password: Yaironman@.26
+
+    jpa:
+      hibernate:
+        ddl-auto: none
+      show-sql: true
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+    springdoc:
+      api-docs:
+        path: /api-docs
+      swagger-ui:
+        path: /swagger-ui.html
+        enabled: true
+
+  security:
+      jwt:
+        secret-key: secret

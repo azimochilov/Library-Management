@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Branch Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            padding: 2em;
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            margin-bottom: 1.5em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+        }
+        .header a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 1em;
+        }
+        .header a:hover {
+            text-decoration: underline;
+        }
+        .details {
+            margin-bottom: 1em;
+        }
+        .details label {
+            font-weight: bold;
+            color: #555;
+        }
+        .details p {
+            margin: 0.5em 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Branch Details</h1>
+        <a href="/branches" class="button">Back to List</a>
+    </div>
+    <div class="details">
+        <p><label>ID:</label> <span th:text="${branch.id}"></span></p>
+        <p><label>Name:</label> <span th:text="${branch.name}"></span></p>
+        <p><label>Library:</label> <span th:text="${branch.library.name}"></span></p>
+    </div>
+</div>
+</body>
+</html>

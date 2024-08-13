@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        .container h1 {
+            margin-bottom: 1em;
+            font-size: 2em;
+            text-align: center;
+            color: #333;
+        }
+        .detail {
+            margin-bottom: 1em;
+            font-size: 1.2em;
+            color: #555;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Book Details</h1>
+    <div class="detail">
+        <strong>ID:</strong> <span th:text="${book.id}"></span>
+    </div>
+    <div class="detail">
+        <strong>Name:</strong> <span th:text="${book.nameOfBook}"></span>
+    </div>
+    <div class="detail">
+        <strong>Title:</strong> <span th:text="${book.title}"></span>
+    </div>
+    <div class="detail">
+        <strong>Author:</strong> <span th:text="${book.author}"></span>
+    </div>
+    <div class="detail">
+        <strong>Branch:</strong> <span th:text="${book.branchName}"></span>
+    </div>
+    <a th:href="@{/books/edit/{id}(id=${book.id})}" class="submit-button">Edit</a>
+    <a th:href="@{/books/delete/{id}(id=${book.id})}" class="submit-button">Delete</a>
+    <a href="/books" class="submit-button">Back to List</a>
+</div>
+</body>
+</html>

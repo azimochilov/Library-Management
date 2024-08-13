@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+    <!-- Include jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script type="text/javascript">
+        function createLocalstorageItem(txtJwtTokenValue) {
+            sessionStorage.setItem("jwtToken", txtJwtTokenValue);
+        }
+
+        function readValue() {
+            var jwtToken = sessionStorage.getItem("jwtToken");
+            console.log("jwtToken : " + jwtToken);
+            return jwtToken;
+        }
+
+        function getDataFromAPiByPassingJwtTokenInHeader() {
+            var jwtToken = readValue();
+            $.ajax({
+                url: 'http://localhost:8081/books/order', // Replace with your actual API endpoint
+                type: 'POST',
+                data: {},
+                headers: {
+                    'Authorization': "Bearer " + jwtToken,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.info(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("Error fetching data:", textStatus, errorThrown);
+                }
+            });
+        }        function handleLogin(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'username': username,
+                    'password': password
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Login failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    createLocalstorageItem(data.accessToken); // Save token to sessionStorage
+                    window.location.href = '/books/order'; // Redirect to another page
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('error').innerText = 'Invalid username or password.';
+                });
+        }
+    </script>
+</head>
+<body>
+<form id="loginForm" onsubmit="handleLogin(event)">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Login</button>
+    <div id="error" class="error"></div>
+</form>
+</body>
+</html>
