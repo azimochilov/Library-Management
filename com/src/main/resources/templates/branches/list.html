@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Branches List</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 2em auto;
+            max-width: 900px;
+            position: relative;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+        .button-container {
+            text-align: center;
+            margin-bottom: 1em;
+        }
+        .button-container a, .button-container form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75em 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1em;
+            margin: 0 0.5em;
+        }
+        .button-container a:hover, .button-container form button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 0.75em;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        table th {
+            background-color: #f4f4f4;
+            color: #555;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .actions a, .actions button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5em 1em;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin: 0 0.5em;
+        }
+        .actions a:hover, .actions button:hover {
+            background-color: #0056b3;
+        }
+        .home-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5em 1em;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/home" class="home-button">Home</a>
+    <h1>Branches List</h1>
+    <div class="button-container">
+        <a href="/branches/create">Add New Branch</a>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Library</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="branch : ${branches}">
+            <td th:text="${branch.id}"></td>
+            <td th:text="${branch.name}"></td>
+            <td th:text="${branch.getLibraryName()}"></td>
+            <td class="actions">
+                <a th:href="@{/branches/{id}(id=${branch.id})}">View</a> |
+                <a th:href="@{/branches/edit/{id}(id=${branch.id})}">Edit</a> |
+                <form th:action="@{/branches/delete/{id}(id=${branch.id})}" method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

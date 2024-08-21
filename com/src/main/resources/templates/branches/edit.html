@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Branch</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 2em auto;
+            max-width: 600px;
+            position: relative;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 1em;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5em;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75em;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .button-container {
+            text-align: center;
+        }
+        .button-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75em 1.5em;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+        .home-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5em 1em;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/home" class="home-button">Home</a>
+    <h1>Edit Branch</h1>
+    <form th:action="@{/branches/edit/{id}(id=${branchId})}" th:object="${branchUpdateDto}" method="post">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" th:field="*{name}" required />
+        </div>
+        <div class="form-group">
+            <label for="libraryId">Library:</label>
+            <select id="libraryId" th:field="*{libraryId}" required>
+                <option value="" disabled>Select a library</option>
+                <option th:each="library : ${libraries}"
+                        th:value="${library.id}"
+                        th:text="${library.name}"></option>
+            </select>
+        </div>
+        <div class="button-container">
+            <button type="submit">Update Branch</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

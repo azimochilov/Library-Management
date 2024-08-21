@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Book</title>
+    <title>Transfer Books</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,7 +29,7 @@
         label {
             margin-top: 10px;
         }
-        select, input[type="datetime-local"], input[type="submit"] {
+        select, input[type="submit"] {
             padding: 10px;
             margin-top: 5px;
             border-radius: 4px;
@@ -43,24 +43,38 @@
         input[type="submit"]:hover {
             background-color: #555;
         }
+        .book-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .book-item {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .book-item label {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1 th:text="${formTitle}">Order Book</h1>
-    <form th:action="@{/books/order}" method="post">
-        <label for="book">Select Book:</label>
-        <select id="book" name="bookId" required>
-            <option th:each="book : ${books}" th:value="${book.id}" th:text="${book.title}"></option>
+    <h1 th:text="${formTitle}">Transfer Multiple Books to Branch</h1>
+    <form th:action="@{/books/transferMultiple}" method="post">
+        <label for="branch">Select Branch:</label>
+        <select id="branch" name="branchId" required>
+            <option th:each="branch : ${branches}" th:value="${branch.id}" th:text="${branch.name}"></option>
         </select>
 
-        <label for="startTime">Start Time:</label>
-        <input type="datetime-local" id="startTime" name="startTime" required>
+        <label for="book">Select Books:</label>
+        <ul class="book-list">
+            <li th:each="book : ${books}" class="book-item">
+                <input type="checkbox" th:id="'book-' + ${book.id}" th:name="booksId" th:value="${book.id}">
+                <label th:for="'book-' + ${book.id}" th:text="${book.title}"></label>
+            </li>
+        </ul>
 
-        <label for="endTime">End Time:</label>
-        <input type="datetime-local" id="endTime" name="endTime" required>
-
-        <input type="submit" value="Order Book">
+        <input type="submit" value="Transfer Books">
     </form>
 </div>
 </body>

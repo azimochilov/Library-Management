@@ -44,6 +44,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(registry ->
                         registry
                                 .requestMatchers("/users/**").permitAll()
+                                .requestMatchers("/users/create").permitAll()
+                                .requestMatchers("/books/**").permitAll()
+                                .requestMatchers("/libraries/**").permitAll()
                                 .requestMatchers("/**").permitAll()
                                 .requestMatchers("/privilege").permitAll()
                                 .requestMatchers("/role").permitAll()

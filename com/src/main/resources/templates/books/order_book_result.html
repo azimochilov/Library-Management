@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Book Result</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+            margin: 10px 0;
+        }
+        .result-info {
+            background-color: #e9f5f9;
+            border-left: 5px solid #00aaff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .message {
+            color: #ff4d4d;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+            text-align: center;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Order Book Result</h1>
+    <div th:if="${orderId != null}" class="result-info">
+        <p><strong>Order ID:</strong> <span th:text="${orderId}"></span></p>
+        <p><strong>Ordered By:</strong> <span th:text="${orderedBy}"></span></p>
+    </div>
+    <div th:if="${message != null}" class="message">
+        <p th:text="${message}"></p>
+    </div>
+    <a th:href="@{/books}">Back to Book List</a>
+</div>
+</body>
+</html>

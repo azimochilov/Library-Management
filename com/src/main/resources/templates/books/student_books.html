@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Books Used by Student</title>
+    <style>
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        a, button {
+            display: inline-block;
+            text-align: center;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        a:hover, button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Find Books Used by Student</h1>
+    <form th:action="@{/books/student}" method="post">
+        <label for="studentId">Student ID:</label>
+        <input type="number" id="studentId" name="studentId" required>
+        <button type="submit">Search</button>
+    </form>
+    <div th:if="${books != null}">
+        <h2>Books Used by Student (ID: <span th:text="${studentId}"></span>)</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Book Id</th>
+                <th>Name of Book</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Branch Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${books}">
+                <td th:text="${book.id}"></td>
+                <td th:text="${book.nameOfBook}"></td>
+                <td th:text="${book.title}"></td>
+                <td th:text="${book.author}"></td>
+                <td th:text="${book.branchName}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div>
+            <a href="/books">Back to Books List</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

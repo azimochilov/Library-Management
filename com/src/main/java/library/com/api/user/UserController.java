@@ -23,13 +23,13 @@ public class UserController {
     @GetMapping("/create")
     public String showCreateUserForm(Model model) {
         model.addAttribute("userCreationDto", new UserCreationDto());
-        return "create-user";
+        return "register";
     }
 
     @PostMapping("/create")
-    public String createUser(@ModelAttribute UserCreationDto userCreationDto) {
+    public String createUser(@RequestBody UserCreationDto userCreationDto) {
         userService.create(userCreationDto);
-        return "redirect:/users/list";
+        return "redirect:/verification";
     }
 
     @GetMapping("/list")
@@ -43,7 +43,6 @@ public class UserController {
     public String showUpdateUserForm(@PathVariable Long id, Model model) {
         UserResultDto user = userService.getById(id);
         UserUpdateDto userUpdateDto = new UserUpdateDto();
-        // Copy properties from UserResultDto to UserUpdateDto
         userUpdateDto.setUsername(user.getUsername());
         userUpdateDto.setPassword(user.getPassword());
         userUpdateDto.setEmail(user.getEmail());

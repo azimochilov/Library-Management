@@ -126,20 +126,13 @@ public class BookService implements IBookService{
         books.forEach(book -> book.setBranch(branch));
         bookRepository.saveAll(books);
     }
-    @Override
-    public boolean isBookBusy(Long bookId) {
-        Book book = bookRepository.findById(bookId).orElseThrow(
-                () -> new NotFoundException("Book with given id not found")
-        );
-        List<Booking> activeBookings = bookingRepository.findByBookAndEndTimeAfter(book, LocalDateTime.now());
-        return !activeBookings.isEmpty();
-    }
+
     @Override
     public List<BookResultDto> getBooksUsedByStudent(Long studentId) {
         User user = userRepository.findById(studentId).orElseThrow(
                 () -> new NotFoundException("Student with given id not found")
         );
-        List<Booking> bookings = bookingRepository.findByUser(user);
+        List<Booking> bookings = bookingRepository.getBookingsByUser(user);
         List<Book> books = bookings.stream().map(Booking::getBook).collect(Collectors.toList());
         return books.stream()
                 .map(book -> modelMapper.map(book, BookResultDto.class))
@@ -147,38 +140,40 @@ public class BookService implements IBookService{
     }
 
     @Override
-    public String orderBook(Long bookId, LocalDateTime startTime, LocalDateTime endTime) {
+    @Transactional
+    public Booking orderBook(Long bookId, LocalDateTime startTime, LocalDateTime endTime) {
         Book book = bookRepository.findById(bookId).orElseThrow(
                 () -> new NotFoundException("Book with given id not found")
         );
+        List<Booking> bookings = bookingRepository.findBookingByBook(book);
 
-        if (isBookBusy(bookId)) {
-            throw new NotFoundException("Book is busy. Please choose another book.");
+        for (Booking existingBooking : bookings) {
+            if (existingBooking.getEndTime().isAfter(startTime) && existingBooking.getStartTime().isBefore(endTime)) {
+                throw new NotFoundException("Book is busy. Please choose another book.");
+            }
         }
+
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new NotFoundException("User is not authenticated or token is invalid");
         }
 
-        String currentUserId = SecurityUtils.getCurrentUsername();
-        System.out.println("Current User ID: " + currentUserId);
+        User user = userRepository.getUserByUserId(Objects.requireNonNull(SecurityUtils.getCurrentUserId())).orElseThrow(
+                () -> new NotFoundException("User is Not valid")
+        );
 
-
-//
-//        User user = userRepository.getUserByUserId(currentUserId).orElseThrow(
-//                () -> new NotFoundException("User is Not valid")
-//        );
-
+        System.out.println("USERID: " + user.getUserId());
         Booking booking = new Booking();
         booking.setBook(book);
-//        booking.setUser(user);
+        booking.setUser(user);
         booking.setStartTime(startTime);
         booking.setEndTime(endTime);
-
         bookingRepository.save(booking);
 
-        return "Book ordered successfully.";
+        return booking;
     }
+
+
 
 }

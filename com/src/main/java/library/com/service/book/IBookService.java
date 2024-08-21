@@ -3,6 +3,7 @@ package library.com.service.book;
 import library.com.domain.dtos.library.book.BookCreationDto;
 import library.com.domain.dtos.library.book.BookResultDto;
 import library.com.domain.dtos.library.book.BookUpdateDto;
+import library.com.domain.entities.library.Booking;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,6 @@ public interface IBookService {
     List<BookResultDto> getAll();
     void transferBookToBranch(Long branchId, Long bookId);
     void transferBooksToBranch(Long branchId, List<Long> booksId);
-    boolean isBookBusy(Long bookId);
     List<BookResultDto> getBooksUsedByStudent(Long studentId);
-    String orderBook(Long bookId, LocalDateTime startTime, LocalDateTime endTime);
+    Booking orderBook(Long bookId, LocalDateTime startTime, LocalDateTime endTime);
 }

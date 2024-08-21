@@ -27,7 +27,7 @@ public class LoginController {
     public ResponseEntity<LoginResponseDto> login(@RequestParam String username, @RequestParam String password) {
         try {
             LoginResponseDto response = loginManagerService.attemptLogin(username, password);
-            return ResponseEntity.ok(response); // Return the token in the response
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }

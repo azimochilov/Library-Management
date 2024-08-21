@@ -10,6 +10,9 @@ import library.com.domain.entities.user.User;
 import library.com.exception.NotFoundException;
 import library.com.repository.role.RoleRepository;
 import library.com.repository.user.UserRepository;
+import library.com.service.email.EmailService;
+import library.com.service.email.EmailVerificationService;
+import library.com.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,7 +31,8 @@ public class UserService implements IUserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-
+    private final EmailService emailService;
+    private final EmailVerificationService emailVerificationService;
     private final ModelMapper modelMapper;
     @Override
     public UserResultDto create(UserCreationDto userDto) {
@@ -44,7 +48,7 @@ public class UserService implements IUserService {
         user.setRole(role);
         userRepository.save(user);
 
-
+        emailService.send(userDto.getEmail(),"Verify Code", emailVerificationService.generateCode());
 
         UserResultDto userResultDto = modelMapper.map(user , UserResultDto.class);
         userResultDto.setRole(role.getName());
@@ -104,40 +108,40 @@ public class UserService implements IUserService {
         return modelMapper.map(user,UserResultDto.class);
     }
 
-//    @Override
-//    public boolean verification(Long id, String code) {
-//        User user = userRepository.findById(id).orElseThrow(
-//                () -> new NotFoundException("User with this id not found")
-//        );
-//        if (user.isActive()) {
-//            return false;
-//        }
-//        Instant now = Instant.now();
-//        try {
-//            if (!now.isBefore(emailVerificationService.getExpiredDate())) {
-//                return false;
-//            }
-//        } catch (Exception e) {
-//            throw new NotFoundException(
-//                    "verification time expired"
-//            );
-//        }
-//        if (!code.equals(emailVerificationService.getVerifyCode())) {
-//            return false;
-//        }
-//
-//        user.setActive(true);
-//        userRepository.save(user);
-//        return true;
-//    }
-//
-//    @Override
-//    public void resendVerificationCode(Long id) {
-//        emailService.send(userRepository.findById(id).orElseThrow(() -> new NotFoundException(
-//                String.format("User with id %s not found", id)
-//        )).getEmail(), "Verify Code", emailVerificationService.generateCode());
-//
-//    }
+    @Override
+    public boolean verification(String username, String code) {
+        User user = userRepository.getUserByUsername(username).orElseThrow(
+                () -> new NotFoundException("User with this id not found")
+        );
+        if (user.isActive()) {
+            return false;
+        }
+        Instant now = Instant.now();
+        try {
+            if (!now.isBefore(emailVerificationService.getExpiredDate())) {
+                return false;
+            }
+        } catch (Exception e) {
+            throw new NotFoundException(
+                    "verification time expired"
+            );
+        }
+        if (!code.equals(emailVerificationService.getVerifyCode())) {
+            return false;
+        }
+
+        user.setActive(true);
+        userRepository.save(user);
+        return true;
+    }
+
+    @Override
+    public void resendVerificationCode(String username) {
+        emailService.send(userRepository.getUserByUsername(username).orElseThrow(() -> new NotFoundException(
+                String.format("User with given username not found")
+        )).getEmail(), "Verify Code", emailVerificationService.generateCode());
+
+    }
 
     @Override
     public void delete(Long id) {

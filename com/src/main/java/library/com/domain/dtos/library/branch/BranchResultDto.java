@@ -12,6 +12,6 @@ import lombok.Setter;
 public class BranchResultDto {
     private Long id;
     private String name;
-
+    private Long libraryId;
     private String libraryName;
 }

@@ -1,16 +1,13 @@
 package library.com.api.book;
 
-import library.com.domain.dtos.library.book.BookCreationDto;
-import library.com.domain.dtos.library.book.BookResultDto;
-import library.com.domain.dtos.library.book.BookUpdateDto;
+import library.com.domain.dtos.library.book.*;
 import library.com.domain.dtos.library.branch.BranchResultDto;
-import library.com.domain.entities.library.Book;
-import library.com.domain.entities.library.Branch;
+import library.com.domain.dtos.library.order.OrderRequest;
+import library.com.domain.entities.library.Booking;
 import library.com.service.book.BookService;
 import library.com.service.branch.BranchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +15,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+
 import java.util.List;
 
 @Slf4j
@@ -34,22 +33,22 @@ public class BookController {
     public String listBooks(Model model) {
         List<BookResultDto> books = bookService.getAll();
         model.addAttribute("books", books);
-        return "books_list";
+        return "books/books_list";
     }
 
     @GetMapping("/{id}")
     public String viewBook(@PathVariable Long id, Model model) {
         BookResultDto book = bookService.getById(id);
         model.addAttribute("book", book);
-        return "book_details";
+        return "books/book_details";
     }
 
     @GetMapping("/create")
     public String createBookForm(Model model) {
         model.addAttribute("bookDto", new BookCreationDto());
-        model.addAttribute("branches", branchService.getAll()); // Populate branches dropdown
+        model.addAttribute("branches", branchService.getAll());
         model.addAttribute("formTitle", "Create Book");
-        return "book_form";
+        return "books/book_form";
     }
 
     @PostMapping("/create")
@@ -66,11 +65,10 @@ public class BookController {
         updateDto.setNameOfBook(book.getNameOfBook());
         updateDto.setTitle(book.getTitle());
         updateDto.setAuthor(book.getAuthor());
-        //updateDto.setBranchId();
         model.addAttribute("bookDto", updateDto);
         model.addAttribute("branches", branchService.getAll()); // Populate branches dropdown
         model.addAttribute("formTitle", "Update Book");
-        return "book_form";
+        return "books/book_form";
     }
 
     @PostMapping("/update")
@@ -92,7 +90,7 @@ public class BookController {
         model.addAttribute("branches", branches);
         model.addAttribute("books", books);
         model.addAttribute("formTitle", "Transfer Book to Branch");
-        return "transfer_book";
+        return "books/transfer_book";
     }
 
     @PostMapping("/transfer")
@@ -108,7 +106,7 @@ public class BookController {
         model.addAttribute("branches", branches);
         model.addAttribute("books", books);
         model.addAttribute("formTitle", "Transfer Multiple Books to Branch");
-        return "transfer_books";
+        return "books/transfer_books";
     }
 
     @PostMapping("/transferMultiple")
@@ -117,54 +115,56 @@ public class BookController {
         return "redirect:/books";
     }
 
-    @GetMapping("/isBusy/{id}")
-    public String checkIfBookBusy(@PathVariable Long id, Model model) {
-        boolean isBusy = bookService.isBookBusy(id);
-        model.addAttribute("bookId", id);
-        model.addAttribute("isBusy", isBusy);
-        return "book_status";
-    }
 
-    @GetMapping("/booksUsedByStudent/{id}")
-    public String getBooksUsedByStudent(@PathVariable Long id, Model model) {
-        List<BookResultDto> books = bookService.getBooksUsedByStudent(id);
-        model.addAttribute("books", books);
-        return "books_used_by_student";
-    }
+
     @GetMapping("/order")
     public String orderBookForm(Model model) {
         List<BookResultDto> books = bookService.getAll();
         model.addAttribute("books", books);
         model.addAttribute("formTitle", "Order Book");
-        return "order_book";
+        return "books/order_book";
     }
+
+
 
     @PostMapping("/order")
-    public String orderBook(@RequestParam Long bookId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
-        bookService.orderBook(bookId, startTime, endTime);
-        return "redirect:/books";
+    public String orderBook(@RequestBody OrderRequest orderRequest, RedirectAttributes redirectAttributes) {
+        Booking booking = bookService.orderBook(orderRequest.getBookId(), orderRequest.getStartTime(), orderRequest.getEndTime());
+
+        redirectAttributes.addFlashAttribute("orderId", booking.getId());
+        redirectAttributes.addFlashAttribute("orderedBy", booking.getUser().getUsername());
+        redirectAttributes.addFlashAttribute("message", "Order placed successfully!");
+
+        return "redirect:/books/order/result";
     }
 
-//
-//    @GetMapping("/order/{id}")
-//    public String showOrderForm(@PathVariable("id") Long bookId, Model model) {
-//        model.addAttribute("bookId", bookId);
-//        return "order_book";
-//    }
-//
-//    @PostMapping("/order")
-//    public String orderBook(@RequestParam Long bookId,
-//                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
-//                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
-//                            Model model) {
-//        try {
-//            String message = bookService.orderBook(bookId, startTime, endTime);
-//            model.addAttribute("successMessage", message);
-//        } catch (Exception e) {
-//            model.addAttribute("errorMessage", e.getMessage());
-//        }
-//        return "redirect:/orderBookResult";
-//    }
+    @GetMapping("/student")
+    public String getBooksUsedByStudent(Model model) {
+
+        return "books/student_books";
+    }
+
+    @PostMapping("/student")
+    public String postBooksUsedByStudent(@RequestParam Long studentId, Model model) {
+        List<BookResultDto> books = bookService.getBooksUsedByStudent(studentId);
+        model.addAttribute("books", books);
+        model.addAttribute("studentId", studentId);
+        return "books/student_books";
+    }
+    @GetMapping("/order/result")
+    public String orderResult(@RequestParam(value = "message", required = false) String message,
+                              @RequestParam(value = "orderId", required = false) Long orderId,
+                              @RequestParam(value = "orderedBy", required = false) String orderedBy,
+                              Model model) {
+        model.addAttribute("orderId", orderId);
+        model.addAttribute("orderedBy", orderedBy);
+        model.addAttribute("message", message);
+
+        return "books/order_book_result";
+    }
+
+
+
 
 
 }

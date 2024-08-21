@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Library</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 2em auto;
+            max-width: 600px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 0.5em;
+            font-weight: bold;
+        }
+
+            input {
+                margin-bottom: 1em;
+                padding: 0.75em;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            button {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 0.75em;
+                cursor: pointer;
+                font-size: 1em;
+            }
+            button:hover {
+                background-color: #0056b3;
+            }
+            a {
+                display: block;
+                text-align: center;
+                margin-top: 1em;
+                color: #007bff;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Edit Library</h1>
+    <form th:action="@{/libraries/edit/{id}(id=${library.id})}" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" th:value="${library.name}" required />
+        <button type="submit">Update</button>
+    </form>
+    <a href="/libraries">Back to List</a>
+</div>
+</body>
+</html>

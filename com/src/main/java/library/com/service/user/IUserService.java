@@ -12,7 +12,7 @@ public interface IUserService {
     UserResultDto getUserByUsername(String username);
     UserResultDto getById(Long id);
     UserResultDto update(Long id, UserUpdateDto userDto);
-//    public boolean verification(Long id, String code);
-//    public void resendVerificationCode(Long id);
     void delete(Long id);
+    boolean verification(String username, String code);
+    void resendVerificationCode(String username );
 }

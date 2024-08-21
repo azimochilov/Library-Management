@@ -42,39 +42,13 @@
             font-size: 14px;
         }
     </style>
-    <!-- Include jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Custom JavaScript -->
-    <script type="text/javascript">
-        function createLocalstorageItem(txtJwtTokenValue) {
-            sessionStorage.setItem("jwtToken", txtJwtTokenValue);
+    <script>
+        function createLocalstorageItem(token) {
+            localStorage.setItem("token", token);
         }
 
-        function readValue() {
-            var jwtToken = sessionStorage.getItem("jwtToken");
-            console.log("jwtToken : " + jwtToken);
-            return jwtToken;
-        }
-
-        function getDataFromAPiByPassingJwtTokenInHeader() {
-            var jwtToken = readValue();
-            $.ajax({
-                url: 'http://localhost:8081/books/order', // Replace with your actual API endpoint
-                type: 'POST',
-                data: {},
-                headers: {
-                    'Authorization': "Bearer " + jwtToken,
-                },
-                dataType: 'json',
-                success: function (data) {
-                    console.info(data);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error("Error fetching data:", textStatus, errorThrown);
-                }
-            });
-        }        function handleLogin(event) {
-            event.preventDefault(); // Prevent the form from submitting the traditional way
+        function handleLogin(event) {
+            event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
@@ -96,7 +70,7 @@
                 })
                 .then(data => {
                     createLocalstorageItem(data.accessToken); // Save token to sessionStorage
-                    window.location.href = '/books/order'; // Redirect to another page
+                    window.location.href = '/home'; // Redirect to another page
                 })
                 .catch(error => {
                     console.error('Error:', error);

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -32,6 +33,9 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
     @PrePersist
     public void prePersist() {

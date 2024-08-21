@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Library</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 2em auto;
+            max-width: 600px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+        p {
+            margin-bottom: 1em;
+        }
+        button, a {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75em 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1em;
+            margin: 0 0.5em;
+        }
+        button:hover, a:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Library Details</h1>
+    <p>ID: <span th:text="${library.id}"></span></p>
+    <p>Name: <span th:text="${library.name}"></span></p>
+    <a th:href="@{/libraries/edit/{id}(id=${library.id})}">Edit</a>
+    <form th:action="@{/libraries/delete/{id}(id=${library.id})}" method="post" style="display:inline;">
+        <button type="submit">Delete</button>
+    </form>
+    <a href="/libraries">Back to List</a>
+</div>
+</body>
+</html>
